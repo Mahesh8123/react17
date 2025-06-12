@@ -1,0 +1,652 @@
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+
+const roles = ["Batsman", "Bowler", "Wicket Keeper"];
+
+const AddPlayerForm = ({ open, onClose, onSubmit, player }) => {
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
+  const [id, setId] = useState(null);
+
+  useEffect(() => {
+    if (player) {
+      setName(player.name);
+      setRole(player.role);
+      setId(player.id);
+    }
+  }, [player]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSubmit({ name, role , id});
+    setName("");
+    setRole("");
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle>{id ? "Edit" : "Add"} Player</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            margin="normal"
+            fullWidth
+            required
+          />
+          <FormControl fullWidth margin="normal" required>
+            <InputLabel>Role</InputLabel>
+            <Select
+              value={role}
+              onChange={(event) => setRole(event.target.value)}
+            >
+              {roles.map((role) => (
+                <MenuItem key={role} value={role}>
+                  {role}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSubmit} color="primary">
+          {id ? 'Edit' : 'Add'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default AddPlayerForm;
+
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+
+
+const AddPlayerTeamForm = ({ open, onClose, onSubmit, players }) => {
+
+  const [playerId, setPlayerId] = useState(null);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSubmit(playerId);
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle>Add Player to Mumbai Indians</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit}>
+         
+          <FormControl fullWidth margin="normal" required>
+            <InputLabel>Select Player</InputLabel>
+            <Select
+              value={playerId}
+              onChange={(event) => setPlayerId(event.target.value)}
+            >
+              {players.map((player) => (
+                <MenuItem key={player.id} value={player.id}>
+                  {player.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSubmit} color="primary">
+          Add
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default AddPlayerTeamForm;
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+import './App.css';
+import Players from './Players';
+import Teams from './Teams';
+import { Toaster } from 'react-hot-toast';
+
+function App() {
+  return (
+    <div className="App">
+      <Toaster />
+       <Players />
+       <Teams />
+    </div>
+  );
+}
+
+export default App;
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+
+const roles = ["Batsman", "Bowler", "Wicket Keeper"];
+
+const ChangeRole = ({ open, onClose, onSubmit, player }) => {
+  
+  const [role, setRole] = useState("");
+ 
+  useEffect(() => {
+    if (player) {
+        setRole(player.role);
+    }
+  }, [player])
+
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const newPlayer = {
+        ...player,
+        role
+    }
+    onSubmit(player.id, newPlayer);
+   
+    setRole("");
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle>You are going to change role of {player?.name}</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit}>
+         
+          <FormControl fullWidth margin="normal" required>
+            <InputLabel>Select Role</InputLabel>
+            <Select
+              value={role}
+              onChange={(event) => setRole(event.target.value)}
+            >
+              {roles.map((role) => (
+                <MenuItem key={role} value={role}>
+                  {role}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSubmit} color="primary">
+          Change
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default ChangeRole;
+import { playersData } from "./PlayersData";
+
+const allPlayers = playersData;
+
+
+export const getPlayers = () => {
+return allPlayers;
+};
+
+export const generateId = () => {
+
+    const ids=allPlayers.map(player=>player.id);
+    return ids.length?Math.max(...ids)+1:1;
+};
+
+/* 
+    Returns the player for a given player id
+  */
+export const getPlayer = (id) => {
+    return playersData.find(player=>player.id===id);
+};
+
+/* 
+    Adds the player to player list
+*/
+export const addPlayer = (player) => {
+    playersData.push(player);
+};
+
+/* 
+    Updates the player given the index and new changed values
+*/
+export const updatePlayer = (index, newPlayer) => {
+    if(index!==-1){
+        allPlayers[index]={...allPlayers[index],...newPlayer};
+    }
+};
+
+/*
+    Deletes a player from player list
+*/
+export const deletePlayer = (index) => {
+    // const index1=allPlayers.findIndex(p=>p.id===id);
+  if(index!==-1){
+    allPlayers.splice(index,1);
+  }
+};
+
+export const getIndexOfPlayer = (id) => {
+    return allPlayers.findIndex(player=>player.id===id);
+}
+
+import React, { useEffect, useState } from "react";
+import { playersData } from "./PlayersData";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Box from "@mui/material/Box";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
+
+import Typography from "@mui/material/Typography";
+import AddPlayerForm from "./AddPlayerForm";
+import { generateId, getIndexOfPlayer, getPlayer, updatePlayer, deletePlayer as deletePlayerByIndex, getPlayers, addPlayer as addNewPlayer } from "./Player";
+
+function Players() {
+  const [playerData, setPlayerData] = useState(playersData);
+  const [open, setOpen] = useState(false);
+  const [player, setPlayer] = useState(undefined);
+
+ 
+
+
+  const handleOpen = (player) => {
+    setPlayer(player);
+    setOpen(true, player);
+  };
+  const handleClose = () => setOpen(false);
+
+  const addPlayer = ({ name, role, id }) => {
+    if (id) {
+      // edit player
+      const index = getIndexOfPlayer(id)
+      updatePlayer(index, {name, role})
+      
+    } else {
+      const player = {
+        id: generateId(),
+        name,
+        role,
+      };
+      addNewPlayer(player);
+    }
+    setPlayerData([...getPlayers()])
+
+  };
+
+  const deletePlayer = (player) => {
+    const index = getIndexOfPlayer(player.id);
+
+    deletePlayerByIndex(index);
+    setPlayerData([...getPlayers()])
+
+  }
+
+  return (
+    <>
+      <Box>
+        <Button
+          size="small"
+          variant="outlined"
+          startIcon={<AddIcon />}
+          onClick={() => setOpen(true)}
+        >
+          Add New Player
+        </Button>
+      </Box>
+      {playerData.map((player) => (
+        <Card key={player.id} variant="outlined" style={{ padding: 30 }}>
+          <CardContent>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              {player.name}
+            </Typography>
+
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              Role: {player.role}
+            </Typography>
+          </CardContent>
+
+          <Box textAlign="center">
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<EditIcon />}
+              onClick={() => handleOpen(player)}
+            >
+              Edit
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={() => deletePlayer(player)}
+            >
+              Delete
+            </Button>
+          </Box>
+        </Card>
+      ))}
+
+      <AddPlayerForm
+        open={open}
+        onSubmit={addPlayer}
+        onClose={handleClose}
+        player={player}
+      />
+    </>
+  );
+}
+
+export default Players;
+export const playersData = [
+    {
+        id: 1,
+        name: 'M S Dhoni',
+        role: 'Wicket Keeper',
+
+    },
+    {
+        id: 2,
+        name: 'Virat Kohli',
+        role: 'Batsman'
+    },
+    {
+        id: 3, 
+        name: 'Jasprit Bumrah',
+        role:  'Bowler'
+
+    },
+    {
+        id: 4, 
+        name:  'Rohit Sharma', 
+        role: 'Batsman'
+    },
+    {
+       id:  5,
+       name:  'Rishabh Pant', 
+       role: 'Wicket Keeper'
+    },
+    {
+        id: 6,
+        name:  'T. Natarajan', 
+        role: 'Bowler'
+    },
+    {
+        id: 7, 
+        name: 'R Ashwin', 
+        role: 'Bowler'
+    }
+]
+
+
+import { ElectricScooterSharp } from '@mui/icons-material';
+import toast from 'react-hot-toast';
+
+const alert = (msg) => {
+  toast.error(msg, {position: 'top-right'})
+}
+
+
+let team = {
+  title: "Mumbai Indians",
+  players: [],
+};
+
+export const getTeam = () => {
+  return team;
+};
+
+export const setTeam = (tm) => {
+  team = tm;
+};
+
+/*
+    Should edit a player of given id to nwPlayer
+  */
+export const editTeamPlayer = (id, nwPlayer) => {
+  const index=team.players.findIndex(p=>p.id===id);
+  if(index!==-1){
+    team.players[index]={...team.players[index],...nwPlayer};
+  }
+  else{
+    alert("Player not found to edit");
+  }
+};
+/*
+    Should add a player to team, if the player 
+    already exist alert "This Player already exist in your team !!"
+  */
+export const addTeamPlayer = (player) => {
+  const exists=team.players.some(p=>p.id===player.id);
+  if(exists){
+    alert("This player already exist in your team !!");
+    return;
+  }
+  team.players.push(player);
+};
+
+/*
+    Should delete a player from team
+  */
+export const deleteTeamPlayer = (id) => {
+  const index=team.players.findIndex(p=>p.id===id);
+  if(index!==-1){
+    team.players.splice(index,1);
+
+  }
+else{
+  alert("Player not found to delete");
+}
+};
+
+
+/*
+    Returns error messages if a team does not have exactly 2 batsmen
+    2 bowlers and 1 wicket-keeper
+  */
+export const getStatus = () => {
+const counts={
+  batsman:0,
+  bowler:0,
+  wicketkeeper:0
+};
+team.players.forEach(player=>{
+  const role=player.role;
+  if(role==="Batsman") counts.batsman++;
+  if(role==="Bowler") counts.bowler++;
+  if(role==="Wicket Keeper") counts.wicketkeeper++;
+});
+const errors=[]
+if(counts.batsman<2) errors.push(`You do not have required number of batsmen in your team`);
+if(counts.bowler<2) errors.push(`You do not have required number of bowler in your team`);
+if(counts.wicketkeeper<1) errors.push(`You do not have the required number of wicketkeepers in your team`);
+return errors;
+
+
+};
+
+import React, { useEffect, useState } from "react";
+import { playersData } from "./PlayersData";
+import Stack from "@mui/material/Stack";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import { getPlayer, getPlayers, getIndexOfPlayer } from "./Player";
+import { addTeamPlayer, editTeamPlayer, getTeam, deleteTeamPlayer, getStatus} from "./Team";
+import AddPlayerTeamForm from "./AddPlayerTeamForm";
+import ChangeRole from "./ChangeRole";
+
+import toast from 'react-hot-toast';
+
+const alert = (msg) => {
+  toast.error(msg, {position: 'top-right'})
+}
+
+function Teams() {
+  const [team, setTeam] = useState(getTeam);
+  const [open, setOpen] = useState(false);
+  const [changeRoleOpen, setChangeRoleOpen] = useState(false);
+  const [player, setPlayer] = useState(null);
+
+  useEffect(() => {
+    const status = getStatus();
+    if (status.length && team.players.length) {
+      alert(status.join('\n'))
+    }
+  }, [team])
+
+  const savePlayerToTeam = (id) => {
+    const player = getPlayer(id);
+    if (player) {
+      addTeamPlayer(player);
+      setTeam({ ...getTeam() });
+    }
+  };
+
+  const changeRoleOpenHandler = (player) => {
+    setPlayer(player);
+    setChangeRoleOpen(true);
+  }
+
+  const editPlayer = (id, player) => {
+    editTeamPlayer(id, player)
+    setTeam({ ...getTeam() });
+  }
+
+  const deletePlayer = (player) => {
+    deleteTeamPlayer(player.id);
+    setTeam({ ...getTeam() });
+
+  }
+
+  return (
+    <div>
+      <h1>Build your team by adding players</h1>
+      <Box sx={{ p: 2, border: "1px dashed grey" }}>
+        <h2>{team.title}</h2>
+        {team.players.map((player) => (
+          <div key={player.id} style={{margin: '10px'}}>
+            <h3>{player.name}</h3>
+            <p>Role: {player.role}</p>
+            <Button variant="outlined" startIcon={<EditIcon />} onClick={() => changeRoleOpenHandler(player)}>
+              Edit
+            </Button>
+            <Button variant="outlined" color="error" startIcon={<DeleteIcon />}   onClick={() => deletePlayer(player)}>
+              Delete
+            </Button>
+          </div>
+        ))}
+
+        <Box textAlign="center">
+          <Button
+            variant="contained"
+            onClick={() => setOpen(true)}
+            startIcon={<AddIcon />}
+          >
+            Add Player to team
+          </Button>
+        </Box>
+      </Box>
+      <AddPlayerTeamForm
+        players={getPlayers()}
+        open={open}
+        onClose={() => setOpen(false)}
+        onSubmit={savePlayerToTeam}
+      />
+
+      <ChangeRole open={changeRoleOpen} player={player} onSubmit={editPlayer} onClose={() => setChangeRoleOpen(false)}/>
+    </div>
+  );
+}
+
+export default Teams;
